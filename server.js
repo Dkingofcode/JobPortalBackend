@@ -58,4 +58,4 @@ app.use('/api', authRoutes);
 
 
 
-app.listen(8000, () => console.log('Server running on http://localhost:8000'));
+app.listen(process.env.PORT || 8000, () => console.log('Server running on http://localhost:8000'));
