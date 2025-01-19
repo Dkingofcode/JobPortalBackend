@@ -51,22 +51,7 @@ const allowedOrigins = [
 // Or simply:
 // app.use(cors()); // Enables CORS for all origins (use this for development only)
 
-app.post("/api/generate-resume-section", async (req, res) => {
-  const { prompt } = req.body;
-
-  try {
-    const chatCompletion = await client.chatCompletion({
-      model: "Qwen/Qwen2.5-Coder-32B-Instruct",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 300,
-    });
-
-    res.json({ content: chatCompletion.choices[0].message.content });
-  } catch (error) {
-    console.error("Error generating resume section:", error);
-    res.status(500).json({ error: "Failed to generate content." });
-  }
-});
+app.post("", 
 
 
 app.use('/api/jobseeker', jobseekerRoutes);

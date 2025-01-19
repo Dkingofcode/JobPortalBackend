@@ -44,6 +44,23 @@ module.exports = {
             console.error(error);
             return res.status(500).json({ message: 'Internal server error' });
         }
-    }
+    },
+
+    createResume: async (req, res) => {
+        const { prompt } = req.body;
+      
+        try {
+          const chatCompletion = await client.chatCompletion({
+            model: "Qwen/Qwen2.5-Coder-32B-Instruct",
+            messages: [{ role: "user", content: prompt }],
+            max_tokens: 300,
+          });
+      
+          res.json({ content: chatCompletion.choices[0].message.content });
+        } catch (error) {
+          console.error("Error generating resume section:", error);
+          res.status(500).json({ error: "Failed to generate content." });
+        }
+      }
     
 }
