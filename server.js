@@ -51,7 +51,7 @@ const allowedOrigins = [
 // Or simply:
 // app.use(cors()); // Enables CORS for all origins (use this for development only)
 
-app.post("", 
+
 
 
 app.use('/api/jobseeker', jobseekerRoutes);
