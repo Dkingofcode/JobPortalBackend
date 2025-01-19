@@ -22,15 +22,15 @@ To get the application up and running locally, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/JobPortal.git
+   git clone https://github.com/your-username/JobPortalBackend.git
 
 2. Change Directory into Frontend Folder:
    ```bash
-   cd Frontend
+   cd backend
 
 3. Start your app:
    ```bash
-   npm run dev
+   nodemon server.js
 
 ![ScreenShot](./JobPortalImageFile.jpg)   
    
