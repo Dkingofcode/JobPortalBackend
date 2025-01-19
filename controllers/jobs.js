@@ -35,28 +35,41 @@ getAllJobs: async (req, res) => {
     }
 },
 
-// Get a job by ID
- getJobById: async (req, res) => {
+getJobById: async (req, res) => {
     try {
-        const { jobTitle, location }= req.query;
-        if(!jobTitle && !location) {
-            res.status(400).json({msg: "Bad request" });
+        const { jobTitle, location } = req.query;
+
+        // Ensure at least one query parameter is provided
+        if (!jobTitle && !location) {
+            return res.status(400).json({ msg: "Bad request: Provide jobTitle or location." });
         }
-        const job = await Job.find({ title: jobTitle, location: location }).populate({
+
+        // Dynamically build the query
+        const query = {};
+        if (jobTitle) query.title = { $regex: new RegExp(jobTitle.trim(), "i") }; // Case-insensitive regex
+        if (location) query.location = { $regex: new RegExp(location.trim(), "i") }; // Case-insensitive regex
+
+        // Find jobs based on the query
+        const jobs = await Job.find(query).populate({
             path: "applications",
         });
-        if (!job) {
+
+        // Check if no jobs were found
+        if (!jobs || jobs.length === 0) {
             return res.status(404).json({
-                message: "Jobs not found.",
-                success: false
-            })
-        };
+                message: "No jobs found matching the criteria.",
+                success: false,
+            });
+        }
+
+        // Return the found jobs
         return res.status(200).json({
-            job,
-            success: true
-        })
+            jobs, // Updated to return all matching jobs
+            success: true,
+        });
     } catch (error) {
-        console.log(error);
+        console.error("Error fetching jobs:", error);
+        return res.status(500).json({ msg: "Server error" });
     }
 },
 
