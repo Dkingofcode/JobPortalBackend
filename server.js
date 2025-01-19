@@ -25,24 +25,25 @@ mongoose.connect(dbURI, {
 .catch((err) => console.error('MongoDB connection error:', err));
 
 const allowedOrigins = [
-     // local development
     'https://job-portal-theta-inky.vercel.app' // Vercel deployment
-];
-
-// Enable CORS for all origins
-app.use(cors({
+  ];
+  
+  app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins(origin)){
-            callback(null, true);
-        }else{
-            callback(new Error('Origin not allowed by CORS'));
-        }
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origin not allowed by CORS'));
+      }
     },
     methods: 'GET,POST,PUT,DELETE,OPTIONS', // Allowed methods
     allowedHeaders: 'Content-Type,Authorization', // Allowed headers
     credentials: true // Allow cookies
-}));
-
+  }));
+  
+  // Handle preflight requests
+  app.options('*', cors());
+  
 // Or simply:
 // app.use(cors()); // Enables CORS for all origins (use this for development only)
 
