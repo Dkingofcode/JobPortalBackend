@@ -32,7 +32,7 @@ module.exports = {
                 username,
                 email,
                 password,
-                role: 'jobseeker'
+                role: 'employer'
             });
     
             // Hash password
