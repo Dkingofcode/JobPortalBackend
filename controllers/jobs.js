@@ -36,27 +36,39 @@ getAllJobs: async (req, res) => {
 },
 
 // Get a job by ID
- getJobById: async (req, res) => {
+getJobById: async (req, res) => {
     try {
-        const { jobTitle, location }= req.query;
-        if(!jobTitle && !location) {
-            res.status(400).json({msg: "Bad request" });
+        const { jobTitle, location } = req.query;
+
+        // Ensure at least one query parameter is provided
+        if (!jobTitle && !location) {
+            return res.status(400).json({ msg: "Bad request" });
         }
-        const job = await Job.find({ title: jobTitle, location: location }).populate({
+
+        // Dynamically build the query
+        const query = {};
+        if (jobTitle) query.title = { $regex: new RegExp(jobTitle, "i") };
+        if (location) query.location = { $regex: new RegExp(location, "i") };
+
+        const job = await Job.find(query).populate({
             path: "applications",
         });
-        if (!job) {
+
+        // Check if no jobs were found
+        if (job.length === 0) {
             return res.status(404).json({
                 message: "Jobs not found.",
                 success: false
-            })
-        };
+            });
+        }
+
         return res.status(200).json({
             job,
             success: true
-        })
+        });
     } catch (error) {
-        console.log(error);
+        console.error("Error fetching job:", error);
+        return res.status(500).json({ msg: "Server error" });
     }
 },
 
