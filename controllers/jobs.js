@@ -34,44 +34,32 @@ getAllJobs: async (req, res) => {
         console.log(error);
     }
 },
-
 getJobById: async (req, res) => {
     try {
-        const { jobTitle, location } = req.query;
-
-        // Ensure at least one query parameter is provided
-        if (!jobTitle && !location) {
-            return res.status(400).json({ msg: "Bad request: Provide jobTitle or location." });
-        }
-
-        // Dynamically build the query
-        const query = {};
-        if (jobTitle) query.title = { $regex: new RegExp(jobTitle.trim(), "i") }; // Case-insensitive regex
-        if (location) query.location = { $regex: new RegExp(location.trim(), "i") }; // Case-insensitive regex
-
-        // Find jobs based on the query
-        const jobs = await Job.find(query).populate({
-            path: "applications",
-        });
-
-        // Check if no jobs were found
-        if (!jobs || jobs.length === 0) {
-            return res.status(404).json({
-                message: "No jobs found matching the criteria.",
-                success: false,
-            });
-        }
-
-        // Return the found jobs
-        return res.status(200).json({
-            jobs, // Updated to return all matching jobs
-            success: true,
-        });
+      const { jobTitle, location } = req.query;
+  
+      // Dynamically build the query
+      const query = {};
+      if (jobTitle?.trim()) query.title = { $regex: new RegExp(jobTitle.trim(), "i") };
+      if (location?.trim()) query.location = { $regex: new RegExp(location.trim(), "i") };
+  
+      if (Object.keys(query).length === 0) {
+        return res.status(400).json({ msg: "Bad request: No valid query parameters provided." });
+      }
+  
+      const jobs = await Job.find(query).populate("applications");
+  
+      if (!jobs || jobs.length === 0) {
+        return res.status(404).json({ message: "No jobs found matching the criteria.", success: false });
+      }
+  
+      return res.status(200).json({ job: jobs, success: true });
     } catch (error) {
-        console.error("Error fetching jobs:", error);
-        return res.status(500).json({ msg: "Server error" });
+      console.error("Error fetching jobs:", error);
+      return res.status(500).json({ msg: "Server error" });
     }
-},
+  },
+  
 
 // // Search Jobs Or Get Jobs by Geographical Location
 // getJobByLocation: async (req, res) => {
