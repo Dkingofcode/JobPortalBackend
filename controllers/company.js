@@ -5,6 +5,10 @@ const User = require("../models/User");
 
 module.exports = {
 
+//678cead71e50a1e55aefc8e9
+
+//678d0cb4b05256d20f2d94bf
+
  registerCompany: async (req, res) => {
     try {
         const { companyName, email } = req.body;
